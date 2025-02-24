@@ -1,0 +1,10 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Red circle -->
+  <circle cx="24" cy="24" r="22" fill="#ff0000"/>
+  
+  <!-- Black X -->
+  <path d="M14 14 L34 34 M34 14 L14 34" 
+        stroke="black" 
+        stroke-width="4" 
+        stroke-linecap="round"/>
+</svg> 

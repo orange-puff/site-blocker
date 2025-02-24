@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .block-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .blocked-sites {
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .blocked-sites ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .blocked-sites li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      word-break: break-all;
+    }
+
+    .blocked-sites li:last-child {
+      border-bottom: none;
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      color: #ff0000;
+      border: none;
+      cursor: pointer;
+      padding: 0 8px;
+      font-size: 18px;
+      margin-left: 8px;
+      border-radius: 4px;
+    }
+
+    .delete-btn:hover {
+      background-color: #ffebeb;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Website Blocker</h1>
+  <form id="blockForm" class="block-form">
+    <input type="text" id="websiteUrl" placeholder="reddit.com" required>
+    <button type="submit">Block</button>
+  </form>
+
+  <div class="blocked-sites">
+    <ul id="blockedSitesList"></ul>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
