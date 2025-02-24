@@ -5,47 +5,88 @@
   <meta charset="UTF-8">
   <style>
     body {
-      width: 300px;
-      padding: 10px;
-      font-family: Arial, sans-serif;
+      width: 400px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
     }
 
     h1 {
-      color: #333;
-      font-size: 18px;
+      color: #1a1a1a;
+      font-size: 20px;
+      font-weight: 600;
       text-align: center;
+      margin-bottom: 24px;
     }
 
     .block-form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .input-group {
       display: flex;
-      gap: 8px;
-      margin-top: 16px;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #ff4444;
+      box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
     }
 
     input[type="text"] {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      width: 150px;
+    }
+
+    input[type="number"] {
+      width: 70px;
+    }
+
+    .input-label {
+      color: #666;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
     button {
       padding: 8px 16px;
-      background-color: #ff0000;
+      background-color: #ff4444;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
     }
 
     button:hover {
-      background-color: #cc0000;
+      background-color: #ff2020;
     }
 
     .blocked-sites {
       margin-top: 20px;
-      max-height: 200px;
+      max-height: 300px;
       overflow-y: auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .blocked-sites ul {
@@ -58,9 +99,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-      word-break: break-all;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
     }
 
     .blocked-sites li:last-child {
@@ -69,17 +110,36 @@
 
     .delete-btn {
       background-color: transparent;
-      color: #ff0000;
+      color: #ff4444;
       border: none;
       cursor: pointer;
-      padding: 0 8px;
-      font-size: 18px;
-      margin-left: 8px;
-      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      transition: all 0.2s;
     }
 
     .delete-btn:hover {
-      background-color: #ffebeb;
+      background-color: #fff0f0;
+    }
+
+    /* Custom scrollbar */
+    .blocked-sites::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .blocked-sites::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .blocked-sites::-webkit-scrollbar-thumb {
+      background: #ddd;
+      border-radius: 4px;
+    }
+
+    .blocked-sites::-webkit-scrollbar-thumb:hover {
+      background: #ccc;
     }
   </style>
 </head>
@@ -87,7 +147,11 @@
 <body>
   <h1>Website Blocker</h1>
   <form id="blockForm" class="block-form">
-    <input type="text" id="websiteUrl" placeholder="reddit.com" required>
+    <div class="input-group">
+      <input type="text" id="websiteUrl" placeholder="reddit.com" required>
+      <input type="number" id="minutesPerDay" min="0" max="1440" value="0" required>
+      <span class="input-label">minutes / day</span>
+    </div>
     <button type="submit">Block</button>
   </form>
 

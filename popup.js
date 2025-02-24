@@ -1,3 +1,11 @@
+// Function to get next midnight
+function getNextMidnight() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  return tomorrow.getTime();
+}
+
 // Function to display blocked sites
 async function displayBlockedSites() {
   try {
@@ -8,8 +16,8 @@ async function displayBlockedSites() {
     listElement.innerHTML = blockedSites.length
       ? blockedSites.map(site => `
           <li>
-            <span>${site}</span>
-            <button class="delete-btn" data-site="${site}">×</button>
+            <span>${site.url} (${site.minutesPerDay} min/day)</span>
+            <button class="delete-btn" data-site="${site.url}">×</button>
           </li>
         `).join('')
       : '<li>No sites blocked yet</li>';
@@ -30,7 +38,7 @@ async function deleteSite(e) {
   try {
     const result = await browser.storage.local.get('blockedSites');
     const blockedSites = result.blockedSites || [];
-    const updatedSites = blockedSites.filter(site => site !== siteToDelete);
+    const updatedSites = blockedSites.filter(site => site.url !== siteToDelete);
     await browser.storage.local.set({ blockedSites: updatedSites });
     await displayBlockedSites();
   } catch (error) {
@@ -46,17 +54,29 @@ document.getElementById('blockForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const url = document.getElementById('websiteUrl').value;
+  const minutesPerDay = parseInt(document.getElementById('minutesPerDay').value);
 
   try {
     // Get existing blocked sites
     const result = await browser.storage.local.get('blockedSites');
     const blockedSites = result.blockedSites || [];
 
+    // Create new site entry
+    const newSite = {
+      url: url,
+      minutesPerDay: minutesPerDay,
+      minutesUsedToday: 0,
+      nextReset: getNextMidnight()
+    };
+
     // Add new site if it's not already blocked
-    if (!blockedSites.includes(url)) {
-      blockedSites.push(url);
+    if (!blockedSites.some(site => site.url === url)) {
+      blockedSites.push(newSite);
       await browser.storage.local.set({ blockedSites });
+
+      // Clear form
       document.getElementById('websiteUrl').value = '';
+      document.getElementById('minutesPerDay').value = '0';
 
       // Refresh the displayed list
       await displayBlockedSites();
