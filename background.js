@@ -83,8 +83,6 @@ function startTimeTracking(site) {
     const blockedSites = result.blockedSites || [];
     const currentSite = blockedSites.find(s => s.url === site.url);
 
-    console.log("currentSite", site.url);
-
     if (currentSite) {
       const now = Date.now();
 
@@ -115,14 +113,17 @@ function startTimeTracking(site) {
     else {
       stopInterval(site.url);
     }
-  }, 10000); // Run every minute
+  }, 60000); // Run every minute
 }
 
-// Clean up intervals when tab closes
-browser.tabs.onRemoved.addListener((tabId) => {
-  // Ideally, we'd only clear the interval for the specific site,
-  // but we'd need additional tracking to know which tab was for which site
-  Object.keys(activeIntervals).forEach(url => {
-    stopInterval(url);
-  });
+// When a tab is closed, check if there are any tabs left for the site
+// If there are no tabs left, stop the interval
+browser.tabs.onRemoved.addListener(async (tabId) => {
+  const tabs = await browser.tabs.query({});
+  const closingTabUrl = tabs.find(tab => tab.id == tabId).url;
+  const closingTabKey = Object.keys(activeIntervals).find(url => closingTabUrl.includes(url));
+
+  if (tabs.filter(tab => tab.id != tabId && tab.url.toLowerCase().includes(closingTabKey)).length == 0) {
+    stopInterval(closingTabKey);
+  }
 }); 
