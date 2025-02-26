@@ -64,6 +64,11 @@ async function updateSiteInStorage(updatedSite) {
   }
 }
 
+function stopInterval(url) {
+  clearInterval(activeIntervals[url]);
+  delete activeIntervals[url];
+}
+
 // Function to start tracking time for a site
 function startTimeTracking(site) {
   // If already tracking this site, don't start another interval
@@ -77,6 +82,8 @@ function startTimeTracking(site) {
     const result = await browser.storage.local.get('blockedSites');
     const blockedSites = result.blockedSites || [];
     const currentSite = blockedSites.find(s => s.url === site.url);
+
+    console.log("currentSite", site.url);
 
     if (currentSite) {
       const now = Date.now();
@@ -94,8 +101,7 @@ function startTimeTracking(site) {
       // If time limit reached
       if (currentSite.minutesUsedToday >= currentSite.minutesPerDay) {
         // Clear the interval
-        clearInterval(activeIntervals[site.url]);
-        delete activeIntervals[site.url];
+        stopInterval(site.url);
 
         // Find and reload any tabs that are on this site
         const tabs = await browser.tabs.query({});
@@ -106,7 +112,10 @@ function startTimeTracking(site) {
         });
       }
     }
-  }, 60000); // Run every minute
+    else {
+      stopInterval(site.url);
+    }
+  }, 10000); // Run every minute
 }
 
 // Clean up intervals when tab closes
@@ -114,7 +123,6 @@ browser.tabs.onRemoved.addListener((tabId) => {
   // Ideally, we'd only clear the interval for the specific site,
   // but we'd need additional tracking to know which tab was for which site
   Object.keys(activeIntervals).forEach(url => {
-    clearInterval(activeIntervals[url]);
-    delete activeIntervals[url];
+    stopInterval(url);
   });
 }); 
