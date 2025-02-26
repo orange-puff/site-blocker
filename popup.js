@@ -6,6 +6,13 @@ function getNextMidnight() {
   return tomorrow.getTime();
 }
 
+function getMinutesLeftToday(site) {
+  if (site.minutesPerDay == 0) {
+    return "blocked";
+  }
+  return `(${site.minutesUsedToday} / ${site.minutesPerDay} minutes left today)`;
+}
+
 // Function to display blocked sites
 async function displayBlockedSites() {
   try {
@@ -16,7 +23,7 @@ async function displayBlockedSites() {
     listElement.innerHTML = blockedSites.length
       ? blockedSites.map(site => `
           <li>
-            <span>${site.url} (${site.minutesPerDay} min/day)</span>
+            <span>${site.url} ${getMinutesLeftToday(site)}</span>
             <button class="delete-btn" data-site="${site.url}">×</button>
           </li>
         `).join('')
