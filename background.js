@@ -1,3 +1,5 @@
+import { checkAndResetMinutes } from './shared.js';
+
 // Keep track of active intervals for each site
 let activeIntervals = {};
 
@@ -21,10 +23,7 @@ browser.webRequest.onBeforeRequest.addListener(
       }
 
       // Check if we need to reset the counter
-      const now = Date.now();
-      if (now >= matchedSite.nextReset) {
-        matchedSite.minutesUsedToday = 0;
-        matchedSite.nextReset = getNextMidnight();
+      if (checkAndResetMinutes(matchedSite)) {
         await updateSiteInStorage(matchedSite);
       }
 
@@ -44,13 +43,7 @@ browser.webRequest.onBeforeRequest.addListener(
   ["blocking"]
 );
 
-// Function to get next midnight
-function getNextMidnight() {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  return tomorrow.getTime();
-}
+
 
 // Function to update a site in storage
 async function updateSiteInStorage(updatedSite) {
@@ -84,15 +77,7 @@ function startTimeTracking(site) {
     const currentSite = blockedSites.find(s => s.url === site.url);
 
     if (currentSite) {
-      const now = Date.now();
-
-      // Check if we need to reset
-      if (now >= currentSite.nextReset) {
-        currentSite.minutesUsedToday = 0;
-        currentSite.nextReset = getNextMidnight();
-      }
-
-      // Increment minutes used
+      checkAndResetMinutes(currentSite);
       currentSite.minutesUsedToday++;
       await updateSiteInStorage(currentSite);
 
