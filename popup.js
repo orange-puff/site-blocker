@@ -1,10 +1,6 @@
-// Function to get next midnight
-function getNextMidnight() {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  return tomorrow.getTime();
-}
+import { checkAndResetMinutes, getNextMidnight } from './shared.js';
+
+
 
 function getMinutesLeftToday(site) {
   if (site.minutesPerDay == 0) {
@@ -19,6 +15,17 @@ async function displayBlockedSites() {
     const result = await browser.storage.local.get('blockedSites');
     const blockedSites = result.blockedSites || [];
     const listElement = document.getElementById('blockedSitesList');
+
+    let needToUpdate = false;
+    blockedSites.forEach(site => {
+      if (checkAndResetMinutes(site)) {
+        needToUpdate = true;
+      }
+    });
+
+    if (needToUpdate) {
+      await browser.storage.local.set({ blockedSites });
+    }
 
     listElement.innerHTML = blockedSites.length
       ? blockedSites.map(site => `
