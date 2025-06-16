@@ -11,9 +11,11 @@ browser.webRequest.onBeforeRequest.addListener(
     const blockedSites = result.blockedSites || [];
 
     // Check if the URL contains any of the blocked sites
-    const url = details.url.toLowerCase();
+    // Extract domain from URL
+    const urlObj = new URL(details.url);
+    const domain = urlObj.hostname.toLowerCase().replace(/^www\./, '');
     const matchedSite = blockedSites.find(site =>
-      url.includes(site.url.toLowerCase())
+      domain === site.url.toLowerCase()
     );
 
     if (matchedSite) {
