@@ -3,6 +3,9 @@ for a new profile
 
 https://addons.mozilla.org/en-US/developers/addons
 for the developer hub
+1. use johnmancini15
+2. update version in `manifest.json`
+3. upload the new version, click default values
 
 `zip -r site-blocker.xpi *`
 to create xpi file
